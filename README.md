@@ -1,8 +1,22 @@
-# FinanceAnomalyDetector 
-Personal Financial Behavior Anomaly Detection System
+# Finance Anomaly Detector
 
-## Problem Description  
-With the rise of digital banking, users generate extensive transaction histories across bank accounts, UPI platforms, and credit cards. While banks provide basic transaction summaries, they rarely offer intelligent insights into unusual financial behavior.
+This repository contains tools for detecting anomalies in financial transaction data using machine learning.
+
+## Components
+
+- `preprocess.py`: Script for normalizing and preparing transaction data for analysis.
+- `model_dbscan.py`: Implementation of the DBSCAN clustering algorithm for anomaly detection.
+- `anomaly_detection_pipeline.ipynb`: A comprehensive Jupyter notebook demonstrating the end-to-end pipeline.
+
+## Usage
+
+1. **Preprocessing**: Use `preprocess.py` to clean and scale your raw transaction data.
+2. **Modeling**: Run `model_dbscan.py` to identify outliers and suspicious activity.
+3. **Exploration**: Open `anomaly_detection_pipeline.ipynb` for a detailed walkthrough of the process.
+
+## Data
+
+Processed datasets and detected anomalies are stored in the `data/` directory.f digital banking, users generate extensive transaction histories across bank accounts, UPI platforms, and credit cards. While banks provide basic transaction summaries, they rarely offer intelligent insights into unusual financial behavior.
 
 Unexpected charges, spending spikes, new merchants, and behavioral shifts often go unnoticed until they cause significant financial impact. Users lack a lightweight, proactive system that highlights irregularities in their personal spending patterns in an explainable and user-friendly manner.
 
