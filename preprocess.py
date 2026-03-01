@@ -30,29 +30,35 @@ def preprocess_data(df_input):
     """
     df = df_input.copy()
 
-    # Initial Feature Extraction
+    # Feature Extraction (Conditional)
     source_col = 'Description' if 'Description' in df.columns else 'Transaction Reference'
-    df[['payment_type', 'category']] = df.apply(lambda x: process_transaction(x[source_col]), axis=1, result_type='expand')
+    if source_col in df.columns:
+        df[['payment_type', 'category']] = df.apply(lambda x: process_transaction(x[source_col]), axis=1, result_type='expand')
 
-    # Drop non-feature columns
-    df.drop(columns=['Txn Date', 'Value Date', 'Description', 'Transaction Reference', 'Ref No./Cheque No.', 'Balance', 'day', 'month', 'year'], errors='ignore', inplace=True)
-    df.fillna(0, inplace=True)
+    # Parse dates and extract time features if Txn Date is present
+    if 'Txn Date' in df.columns:
+        df['Txn Date'] = pd.to_datetime(df['Txn Date'], dayfirst=True)
+        if 'day' not in df.columns: df['day'] = df['Txn Date'].dt.day
+        if 'month' not in df.columns: df['month'] = df['Txn Date'].dt.month
+
+    # Binarize Nominal Features if they were extracted
+    nominal_cols = [c for c in ['payment_type', 'category'] if c in df.columns]
+    if nominal_cols:
+        df = pd.get_dummies(df, columns=nominal_cols, dtype=int)
+
+    # Automatically identify numeric columns for scaling
+    numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     
-    # Binarize Nominal Features
-    df = pd.get_dummies(df, columns=['payment_type', 'category'], dtype=int)
+    # Scale ALL numeric columns to [0, 1]
+    for col in numeric_cols:
+        scaler = MinMaxScaler()
+        df[[col]] = scaler.fit_transform(df[[col]])
 
-    # Scale numeric columns
-    for col in ['Debit', 'Credit']:
-        if col in df.columns:
-            scaler = MinMaxScaler()
-            df[[col]] = scaler.fit_transform(df[[col]])
-
-    # Validation
-    numeric_cols = df.select_dtypes(include=[np.number]).columns
-    for col in list(numeric_cols):
-        c_min, c_max = df[col].min(), df[col].max()
-        if not (0 <= c_min <= 1 and 0 <= c_max <= 1):
-            df.drop(columns=[col], inplace=True)
+    # Drop strictly non-numeric or non-date columns remaining (except Txn Date if present)
+    cols_to_keep = numeric_cols + (['Txn Date'] if 'Txn Date' in df.columns else [])
+    df = df[cols_to_keep]
+    
+    df.fillna(0, inplace=True)
 
     return df
 
@@ -68,7 +74,8 @@ def run_preprocessing():
 
     # Save processed data
     output_path = 'data/ProcessedDataset.csv'
-    df_processed.to_csv(output_path, index=False)
+    df_save = df_processed.drop(columns=['Txn Date'], errors='ignore')
+    df_save.to_csv(output_path, index=False)
     print(f"\nPreprocessing complete. Saved to {output_path}")
 
 if __name__ == "__main__":
