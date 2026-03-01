@@ -2,6 +2,7 @@
 https://financeanomalydetector-7rmh8mnmb6p3d29sdvcech.streamlit.app/
 
 demolink:https://drive.google.com/file/d/1l1D9aP6pl2j5Umuwj0_VSCHX6siSg3XH/view?usp=sharing
+
 ppt:https://drive.google.com/file/d/1Y-CqbOrrdNz1l0K6eNFZd3RERigZP-oR/view?usp=sharing
 
 
