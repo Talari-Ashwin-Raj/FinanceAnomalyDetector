@@ -1,6 +1,8 @@
 # Finance Anomaly Detector
 https://financeanomalydetector-7rmh8mnmb6p3d29sdvcech.streamlit.app/
 
+demolink:https://drive.google.com/drive/u/1/folders/1bldnLf7kBwKjKkvC06EqBVmXzBBvpGOe
+
 
 This repository contains tools for detecting anomalies in financial transaction data using machine learning.
 
